@@ -1,0 +1,26 @@
+[project]
+name = "student-mental-health"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "ali kara", email = "ali16kara@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "dill>=0.4.1",
+    "joblib==1.4.2",
+    "numpy==1.26.4",
+    "pandas==2.1.4",
+    "pyarrow<21",
+    "scikit-learn==1.4.2",
+    "scipy==1.13.1",
+    "streamlit>=1.67.0",
+]
+
+[project.scripts]
+student-mental-health = "student_mental_health:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
