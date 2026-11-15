@@ -1,4 +1,11 @@
+'''Imports pandas for tabular data handling, joblib for loading serialized model artifacts, 
+   Scikit-learn classification metrics (accuracy_score, precision_score, recall_score, f1_score), 
+   and the project's config module.'''
+
+import pandas as pd
+import joblib
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from src.student_mental_health import config
 
 def metrics(y_test, y_pred):
     return {
@@ -10,21 +17,9 @@ def metrics(y_test, y_pred):
 
             'F1-Score': f1_score( y_test, y_pred, average='weighted', zero_division=0) }
 
-
-
-
-import pandas as pd
-import joblib
-
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score
-)
-
-from src.student_mental_health import config
-
+'''Defines metrics() to compute Accuracy along with weighted Precision, Recall, and F1-Score (
+   zero_division=0 prevents warnings when a class has no predicted samples), 
+   returning the results as a dictionary.'''
 
 def metrics(y_test, y_pred):
     return {
@@ -43,7 +38,9 @@ def metrics(y_test, y_pred):
 
 
 
-# airflow function
+'''Defines evaluate_model() to load the processed test dataset (test.csv) and the saved 
+   logistic_regression.joblib model, generate predictions, compute and print evaluation metrics,
+   export the scores to reports/metrics.csv, and return the output file path.'''
 
 def evaluate_model():
 
