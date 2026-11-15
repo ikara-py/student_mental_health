@@ -19,6 +19,10 @@ The pipeline is orchestrated with **Apache Airflow** (running in Docker), and th
 | 5. Orchestrate | Airflow DAG: `prepare_data >> train_model >> evaluate_model` | `dags/student_mental_health_dag.py` |
 | 6. Serve | Streamlit app that loads the saved model | `app.py` |
 
+## Presentation
+
+Link to the presentation : [Canva](https://canva.link/njxluxtmtbf2wrg)
+
 ## Dataset
 
 - 2,000 students, 17 columns (`data/raw/student-mental-health.csv`)
