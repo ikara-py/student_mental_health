@@ -1,3 +1,7 @@
+'''Imports joblib for model serialization, pandas for DataFrame operations, Scikit-learn pipeline and 
+   preprocessing utilities (Pipeline, SimpleImputer, OneHotEncoder, StandardScaler, ColumnTransformer, clone), 
+   candidate classifiers (LogisticRegression, RandomForestClassifier, SVC), model selection tools (GridSearchCV, 
+   StratifiedKFold), and the project's config module.'''
 
 import joblib
 from sklearn.pipeline import Pipeline
@@ -12,6 +16,10 @@ from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from src.student_mental_health import config
 import pandas as pd
 
+
+'''Defines build_preprocessor() to construct a ColumnTransformer that imputes missing numerical values 
+   with the median and applies standard scaling, while imputing missing categorical values with the most 
+   frequent category and applying one-hot encoding.'''
 
 def build_preprocessor(X_train):
     # Build numerical and categorical preprocessing pipelines.
@@ -37,6 +45,9 @@ def build_preprocessor(X_train):
     return preprocessor
 
 
+'''Defines get_models() to initialize a dictionary of baseline classifiers (Logistic Regression, 
+   Random Forest, and SVM with probability estimation enabled) seeded with config.RANDOM_SEED.'''
+
 def get_models():
     # Define classification models.
 
@@ -58,6 +69,9 @@ def get_models():
     return models
 
 
+'''Defines build_model_pipelines() to wrap a cloned copy of the preprocessor alongside each classifier 
+   into standalone Scikit-learn Pipeline objects.'''
+
 def build_model_pipelines(preprocessor, models):
     # Create model pipelines dynamically.
 
@@ -72,6 +86,9 @@ def build_model_pipelines(preprocessor, models):
 
     return model_pipelines
 
+
+'''Defines train_models() to fit each assembled pipeline on X_train and y_train and 
+   return the dictionary of trained pipelines.'''
 
 def train_models(model_pipelines, X_train, y_train):
     # Train baseline classification models.
@@ -92,6 +109,8 @@ def train_models(model_pipelines, X_train, y_train):
 
     return trained_models
 
+
+'''Defines get_param_grids() to specify the hyperparameter search spaces for Logistic Regression and SVM.'''
 
 def get_param_grids():
     # Define hyperparameter grids for selected models.
@@ -121,6 +140,10 @@ def get_param_grids():
 
     return param_grids
 
+
+'''Defines optimize_models() to tune selected pipelines using 5-fold StratifiedKFold 
+   cross-validation optimized for f1_weighted, returning both the fitted GridSearchCV objects 
+   and their best estimators.'''
 
 def optimize_models(model_pipelines, X_train, y_train, selected_models=None ):
     # Optimize selected models using GridSearchCV.
@@ -161,6 +184,9 @@ def optimize_models(model_pipelines, X_train, y_train, selected_models=None ):
     return grid_searches, best_estimators
 
 
+'''Defines save_model() to create the models/ directory if needed and export a 
+   fitted model pipeline to a .joblib file.'''
+
 def save_model(model, model_name='best_of_the_best_model'):
     # Save the trained model pipeline.
 
@@ -180,6 +206,9 @@ def save_model(model, model_name='best_of_the_best_model'):
     return model_path
 
 
+'''Defines train_model() to load train.csv, build preprocessing and model pipelines, 
+   train baseline models, run hyperparameter optimization, select the tuned Logistic Regression pipeline, 
+   save it to disk, and return the saved model path.'''
 
 def train_model():
 
@@ -201,20 +230,13 @@ def train_model():
     model_pipelines = build_model_pipelines(preprocessor, models)
 
     # Train baseline models
-    trained_models = train_models(
-        model_pipelines,
-        X_train,
-        y_train
-    )
+    trained_models = train_models(model_pipelines, 
+                                  X_train, 
+                                  y_train )
 
-    # Optimize selected models
-    param_grids = get_param_grids()
-
-    grid_searches, best_estimators = optimize_models(
-        model_pipelines,
-        X_train,
-        y_train
-    )
+    grid_searches, best_estimators = optimize_models(model_pipelines, 
+                                                     X_train, 
+                                                     y_train )
 
     # Select final model
     final_model_name = 'Logistic Regression'

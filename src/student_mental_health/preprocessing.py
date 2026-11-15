@@ -1,11 +1,13 @@
+'''Imports pandas for DataFrame manipulation, train_test_split from sklearn.model_selection for 
+   dataset partitioning, and the project's config module.'''
 
 import pandas as pd
-
 from sklearn.model_selection import train_test_split
-
 from src.student_mental_health import config
 
 
+'''Defines clean_data() to enforce logical consistency by capping Social_Media_Hours at Screen_Time_Hours 
+   whenever social media usage exceeds total screen time.'''
 
 def clean_data(df):
 
@@ -20,6 +22,9 @@ def clean_data(df):
     return df
 
 
+'''Defines split_data() to separate features (X, dropping Student_ID and the target) from the target variable (y) 
+   and perform a stratified 80/20 split using config.RANDOM_SEED.'''
+
 def split_data(df, test_size=0.2):
     # Split the dataset into stratified training and testing sets.
 
@@ -31,6 +36,8 @@ def split_data(df, test_size=0.2):
 
     return X_train, X_test, y_train, y_test
 
+
+'''Defines lower_upper() to compute the lower fences for a given column.'''
 
 def lower_upper(df, col):
     # Calculate IQR lower and upper boundaries.
@@ -44,6 +51,9 @@ def lower_upper(df, col):
 
     return lower_bound, upper_bound
 
+
+'''Defines check_outliers() to iterate through numerical columns and return a dictionary 
+   mapping each column name to a DataFrame of rows falling outside its IQR bounds.'''
 
 def check_outliers(df, numerical_columns):
     # Identify outliers in numerical columns.
@@ -63,6 +73,9 @@ def check_outliers(df, numerical_columns):
 
     return result
 
+
+'''Defines cap_outliers() to clip extreme values in both X_train and X_test using IQR boundaries 
+   derived strictly from X_train to prevent data leakage.'''
 
 def cap_outliers(X_train, X_test, numerical_columns):
     # Cap outliers using boundaries calculated from training data.
@@ -84,6 +97,10 @@ def cap_outliers(X_train, X_test, numerical_columns):
 
     return X_train, X_test
 
+
+'''Defines prepare_data() to orchestrate the full preprocessing pipeline: 
+   loading raw data, cleaning values, splitting into train/test sets, detecting and capping outliers,
+   saving train.csv and test.csv to config.PROCESSED_DATA_DIR, and returning their file paths.'''
 
 def prepare_data():
     # Load raw dataset
